@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
-  SafeAreaView,
-  View,
-  Text,
   Image,
+  ScrollView,
+  StyleSheet,
   AsyncStorage,
-  StyleSheet
+  SafeAreaView,
+  TouchableOpacity
 } from "react-native";
 
 import logo from "../assets/logo.png";
+import SpotList from "../components/SpotList";
 
-export default function List() {
+export default function List({ navigation }) {
   const [techs, setTechs] = useState([]);
 
   useEffect(() => {
@@ -21,9 +22,21 @@ export default function List() {
     });
   }, []);
 
+  function logout() {
+    AsyncStorage.clear();
+    navigation.navigate("Login");
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={logo} />
+      <TouchableOpacity onPress={logout}>
+        <Image style={styles.logo} source={logo} />
+      </TouchableOpacity>
+      <ScrollView>
+        {techs.map(tech => (
+          <SpotList key={tech} tech={tech} />
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -31,5 +44,12 @@ export default function List() {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+
+  logo: {
+    height: 32,
+    resizeMode: "contain",
+    alignSelf: "center",
+    marginTop: 30
   }
 });
